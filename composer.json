@@ -1,5 +1,7 @@
 {
     "name": "invinbg/hyperf-http-message",
+    "description": "A Hyperf extension for enhanced HTTP message handling, compatible with PSR-7/PSR-15 standards.",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "InvinbgHyperf\\HttpMessage\\": "src/"

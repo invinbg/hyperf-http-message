@@ -1,0 +1,26 @@
+{
+    "name": "invinbg/hyperf-http-message",
+    "autoload": {
+        "psr-4": {
+            "InvinbgHyperf\\HttpMessage\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "hyperf/http-server": "~3.1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "master"
+        },
+        "hyperf": {
+            "config": "InvinbgHyperf\\HttpMessage\\ConfigProvider"
+        }
+    },
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1"
+    }
+}

@@ -19,6 +19,7 @@ use Hyperf\Contract\Arrayable;
 use Hyperf\HttpServer\Response as BaseResponse;
 use InvinbgHyperf\HttpMessage\Contracts\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+
 use function Hyperf\Support\value;
 
 /**
@@ -27,12 +28,6 @@ use function Hyperf\Support\value;
  */
 class Response extends BaseResponse implements ResponseInterface
 {
-    public function __construct(?PsrResponseInterface $response = null)
-    {
-        parent::__construct($response);
-        $this->data = new Collection();
-    }
-
     public function __get(string $name)
     {
         return $this->getResponseProperty($name);
@@ -57,17 +52,18 @@ class Response extends BaseResponse implements ResponseInterface
      */
     public function withData(mixed $data, bool $override = false): static
     {
+        $contextData = $this->data ?? new Collection();
         $data ??= [];
         if ($data instanceof Arrayable) {
             $data = $data->toArray();
         }
         $isList = Arr::isList($data);
         foreach ((array) $data as $key => $value) {
-            if ($isList && $this->data->has($key) && ! $override) {
-                $this->data = $this->data->push($value);
+            if ($isList && $contextData->has($key) && ! $override) {
+                $this->data = $contextData->push($value);
                 continue;
             }
-            $this->data = $this->data->put($key, $value);
+            $this->data = $contextData->put($key, $value);
         }
 
         return $this;
@@ -80,7 +76,7 @@ class Response extends BaseResponse implements ResponseInterface
     {
         $data = [
             'code' => $this->code ?? 200,
-            'data' => $this->data,
+            'data' => $this->data ?? [],
             'message' => $message,
         ];
         return $this->json($data)->withStatus(200);
@@ -98,7 +94,7 @@ class Response extends BaseResponse implements ResponseInterface
         }
         return $this->json([
             'code' => $code,
-            'data' => $this->data,
+            'data' => $this->data ?? [],
             'message' => $message,
         ])->withStatus($withStatus ? $code : 200);
     }

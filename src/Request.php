@@ -13,13 +13,11 @@ declare(strict_types=1);
 namespace InvinbgHyperf\HttpMessage;
 
 use Closure;
+use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request as BaseRequest;
 use Hyperf\Stringable\Str;
 use InvinbgHyperf\HttpMessage\Contracts\RequestInterface;
 
-/**
- * @property Closure $userResolver
- */
 class Request extends BaseRequest implements RequestInterface
 {
     public function user(?string $guard = null): mixed
@@ -32,7 +30,8 @@ class Request extends BaseRequest implements RequestInterface
      */
     public function getUserResolver(): Closure
     {
-        return $this->userResolver ?? function ($guard) {
+        $userResolver = Context::get(__CLASS__ . '.properties.userResolver');
+        return $userResolver ?? function ($guard) {
             return null;
         };
     }
@@ -44,7 +43,7 @@ class Request extends BaseRequest implements RequestInterface
      */
     public function setUserResolver(Closure $callback): static
     {
-        $this->userResolver = $callback;
+        Context::set(__CLASS__ . '.properties.userResolver', $callback);
 
         return $this;
     }

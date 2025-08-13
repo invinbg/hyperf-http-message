@@ -88,15 +88,16 @@ class Response extends BaseResponse implements ResponseInterface
     public function error(string $message = '请求失败', bool $withStatus = true): PsrResponseInterface
     {
         $code = $this->code ?? 500;
+        $result = [
+            'code' => $code,
+            'data' => $this->data ?? [],
+            'message' => $message,
+        ];
         // http status 4xx 5xx
         if ($code < 400 || $code > 510) {
             $code = 500;
         }
-        return $this->json([
-            'code' => $code,
-            'data' => $this->data ?? [],
-            'message' => $message,
-        ])->withStatus($withStatus ? $code : 200);
+        return $this->json($result)->withStatus($withStatus ? $code : 200);
     }
 
     protected function storeResponseProperty(string $key, mixed $value): static
